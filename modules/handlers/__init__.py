@@ -1,8 +1,9 @@
 from telegram import BotCommand
-from telegram.ext import Dispatcher, Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Dispatcher, Updater, CommandHandler, MessageHandler, CallbackQueryHandler
 
 from .start_handler import start
 from .dice_handler import handle_dice
+from .save_action_handler import approve_action, reject_action
 from modules.filters import CommandFilter
 
 command_filter = CommandFilter()
@@ -15,6 +16,10 @@ def add_handlers(disp: Dispatcher):
     # Start handler
     disp.add_handler(CommandHandler("start", start))
     disp.add_handler(MessageHandler(command_filter, handle_dice))
+
+    # Callback handlers
+    disp.add_handler(CallbackQueryHandler(approve_action, "action_approve_yes"))
+    disp.add_handler(CallbackQueryHandler(reject_action, "action_approve_no"))
 
 def add_commands(updater: Updater):
     """Adds the list of commands with their description to the bot

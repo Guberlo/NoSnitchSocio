@@ -7,5 +7,5 @@ class CommandFilter(MessageFilter):
         Args:
             message: user message passed by the handler 
         """
-        return message.text.startswith("!dado")
+        return message.text and message.text.startswith("!dado")
         

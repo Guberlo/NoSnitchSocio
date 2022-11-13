@@ -3,17 +3,17 @@ import logging
 from telegram.ext import Updater
 
 from modules.handlers import add_commands, add_handlers
-
-TOKEN_TO_REMOVE = "5668925324:AAGCofex3jA0Sr4IM8C6cmgzw7WIBClAELQ"
+from modules.data.config import Config
+from modules.data.database import MysqlConnection
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-def main():
+def main(config: Config):
     """Main method that starts the bot"""
-    updater = Updater(TOKEN_TO_REMOVE,
+    updater = Updater(config.bot_token,
                       request_kwargs={
                           'read_timeout': 20,
                           'connect_timeout': 20
@@ -28,4 +28,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    config = Config()
+    print(config.bot_token)
+    main(config)
