@@ -1,0 +1,12 @@
+appName: snitch
+logLevel: WARN
+
+bot:
+  token: TOKEN
+  adminChatId: CHAT_ID
+
+mysql:
+  host: XXX
+  user: XXX
+  password: XXX
+  db: XXX
