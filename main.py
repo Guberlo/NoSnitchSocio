@@ -29,5 +29,4 @@ def main(config: Config):
 
 if __name__ == '__main__':
     config = Config()
-    print(config.bot_token)
     main(config)
