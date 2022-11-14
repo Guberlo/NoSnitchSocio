@@ -10,6 +10,7 @@ class MysqlConnection:
         self.user = config.db_user
         self.password = config.db_password
         self.db = config.db_database
+        self.ca_location = config.db_ca_location
 
     def connect(self):
         try:
@@ -17,7 +18,8 @@ class MysqlConnection:
                 host=self.host,
                 user=self.user,
                 password=self.password,
-                db=self.db
+                db=self.db,
+                ssl = {'ca': self.ca_location}
             )
         except mysql.connector.DatabaseError as e:
             raise e

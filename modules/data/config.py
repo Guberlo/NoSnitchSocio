@@ -10,6 +10,7 @@ class Config():
         self.db_user = self.config["mysql"]["user"].get()
         self.db_password = self.config["mysql"]["password"].get()
         self.db_database = self.config["mysql"]["db"].get()
+        self.db_ca_location = self.config["mysql"]["ca_location"].get()
         self.bot_token = self.config["bot"]["token"].get()
         self.bot_admin_chat = self.config["bot"]["adminChatId"].get()
 

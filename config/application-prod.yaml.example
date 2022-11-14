@@ -10,3 +10,4 @@ mysql:
   user: XXX
   password: XXX
   db: XXX
+  ca_location: ""
