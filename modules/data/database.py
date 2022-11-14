@@ -19,7 +19,7 @@ class MysqlConnection:
                 user=self.user,
                 password=self.password,
                 db=self.db,
-                ssl = {'ca': self.ca_location}
+                ssl_ca=self.ca_location
             )
         except mysql.connector.DatabaseError as e:
             raise e
