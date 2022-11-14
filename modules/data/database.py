@@ -13,17 +13,21 @@ class MysqlConnection:
         self.password = config.db_password
         self.db = config.db_database
         self.ca_location = config.db_ca_location
+        self.port = config.db_port
 
     def connect(self):
+        mysql_config = {
+            'user': self.user,
+            'password': self.password,
+            'host': self.host,
+            'client_flags': [ClientFlag.SSL],
+            'ssl_ca': self.ca_location,
+            'port': self.port,
+            'database': self.db
+        }
+
         try:
-            connection = mysql.connector.connect(
-                host=self.host,
-                user=self.user,
-                password=self.password,
-                client_flags=[ClientFlag.SSL],
-                db=self.db,
-                ssl_ca=self.ca_location
-            )
+            connection = mysql.connector.connect(**mysql_config)
         except mysql.connector.DatabaseError as e:
             raise e
 

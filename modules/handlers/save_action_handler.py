@@ -29,6 +29,13 @@ def save_action_on_db(action: str) -> bool:
 
     return mysql.insert_or_update(query=query)
 
+def handle_action_decision(update: Update, context: CallbackContext):
+    decision = update.callback_query.data
+    if decision == "approve":
+        approve_action(update, context)
+    else: 
+        reject_action(update, context)
+
 def approve_action(update: Update, context: CallbackContext) -> None:
     """Approves the action sent by a user and saves it into the database."""
     query = update.callback_query
@@ -51,6 +58,6 @@ def get_approve_kb() -> InlineKeyboardMarkup:
         new inline keyboard
     """
     return InlineKeyboardMarkup([[
-        InlineKeyboardButton("🟢 Accetta", callback_data="action_approve_yes,"),
-        InlineKeyboardButton("🔴 Rifiuta", callback_data="action_approve_no,")
-    ], [InlineKeyboardButton("⏹ Stop", callback_data="meme_approve_status,pause")]])
+        InlineKeyboardButton("🟢 Accetta", callback_data="approve"),
+        InlineKeyboardButton("🔴 Rifiuta", callback_data="disapprove")
+    ]])
