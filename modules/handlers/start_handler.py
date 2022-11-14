@@ -8,4 +8,4 @@ def start(update: Update, context: CallbackContext):
         update: update event
         context: context passed by the handler
     """
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Tu ma troia a pehora si scopa mi pa")
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Nico7 Vinsmoke vado ad Utrecht lo disintegroo")

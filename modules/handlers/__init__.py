@@ -32,7 +32,7 @@ def add_commands(updater: Updater):
         updater: supplied Updater
     """
     commands = [
-        BotCommand("start", "Ti fo vedere le troie")
+        BotCommand("start", "Nicola Mattiuzzo ti devasto!")
     ]
 
     updater.bot.set_my_commands(commands=commands)
