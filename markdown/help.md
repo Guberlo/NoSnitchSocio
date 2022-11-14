@@ -7,3 +7,13 @@
 \!lista: mostra tutte le azioni presenti nel pool con il rispettivo grado di rischio\.
 
 *NOTA*: Le azioni hanno un grado di rischio specifico: ALTO, MEDIO, BASSO\. Giocando a \!dado il grado di rischio massimo sarà MEDIO\.
+
+                   (( _______
+         _______     /\O    O\
+        /O     /\   /  \      \
+       /   O  /O \ / O  \O____O\ ))
+    ((/_____O/    \\    /O     /
+      \O    O\    / \  /   O  /
+       \O    O\ O/   \/_____O/
+        \O____O\/ )) mrf      ))
+      ((
