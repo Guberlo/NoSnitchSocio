@@ -1,5 +1,7 @@
 import mysql.connector
 
+from mysql.connector.constants import ClientFlag
+
 from .config import Config
 
 
@@ -18,6 +20,7 @@ class MysqlConnection:
                 host=self.host,
                 user=self.user,
                 password=self.password,
+                client_flags=[ClientFlag.SSL],
                 db=self.db,
                 ssl_ca=self.ca_location
             )
