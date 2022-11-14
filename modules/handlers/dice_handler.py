@@ -15,10 +15,11 @@ prefix = "Se esce"
 COMMAND = "!dado"
 
 def get_random_action() -> str:
-    query = f"SELECT COUNT(*) FROM {config.db_database}.actions"
-    count = mysql.select(query)[0][0]
+    query = f"SELECT id FROM {config.db_database}.actions"
+    result = mysql.select(query)
+    ids = [item for t in result for item in t]
     
-    query = f"SELECT description FROM {config.db_database}.actions a WHERE a.id={random.randint(1, count)}"
+    query = f"SELECT description FROM {config.db_database}.actions a WHERE a.id={random.choice(ids)}"
     description = mysql.select(query)
     return description[0][0]
 
