@@ -1,1 +1,1 @@
-from .command_filter import CommandFilter
+from .command_filter import DiceCommandFilter, ListCommandFilter
