@@ -1,7 +1,7 @@
 from telegram import Update, ParseMode
 from telegram.ext import CallbackContext
 
-GROUP_ID = -1631780791
+GROUP_ID = -1001631780791
 
 def send_anonym_message(update: Update, context: CallbackContext):
     """Handles the /send_anonymous command.
