@@ -11,4 +11,4 @@ def send_anonym_message(update: Update, context: CallbackContext):
         context: context passed by the handler
     """
 
-    context.bot.send_message(chat_id=GROUP_ID, text=update.message.text.replace('/send_anonym', ''))
+    context.bot.send_message(chat_id=GROUP_ID, text=update.message.text.replace('/send_anonymous', ''))
