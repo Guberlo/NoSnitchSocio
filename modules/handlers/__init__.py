@@ -34,7 +34,9 @@ def add_commands(updater: Updater):
         updater: supplied Updater
     """
     commands = [
-        BotCommand("start", "Nicola Mattiuzzo ti devasto!")
+        BotCommand("start", "Non serve a nulla, Nicola Mattiuzzo ti devasto!"),
+        BotCommand("help", "Questo ti fa vedere come usare il dado"),
+        BotCommand("send_anonymous", "Questo per mandare i messaggi anonimi!!")
     ]
 
     updater.bot.set_my_commands(commands=commands)
