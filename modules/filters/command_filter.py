@@ -17,5 +17,14 @@ class ListCommandFilter(MessageFilter):
                 message: user message passed by the handler
         """
         return message.text and message.text.startswith("!lista")
+
+class AnonymousCommandFilter(MessageFilter):
+    
+    def filter(self, message) -> bool:
+        """Returns true if message starts with !send_anonymous
+            Args:
+                message: user message passed by the handler
+        """
+        return message.text and message.text.startswith("!send_anonymous")
     
         
