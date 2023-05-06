@@ -17,6 +17,15 @@ class ListCommandFilter(MessageFilter):
                 message: user message passed by the handler
         """
         return message.text and message.text.startswith("!lista")
+    
+class SlotCommandFilter(MessageFilter):
+    
+    def filter(self, message) -> bool:
+        """Returns true if message starts with !lista
+            Args:
+                message: user message passed by the handler
+        """
+        return message.text and message.text.startswith("!slot")
 
 class AnonymousCommandFilter(MessageFilter):
     
