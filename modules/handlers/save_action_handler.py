@@ -13,7 +13,8 @@ mysql = MysqlConnection(config)
 def send_post_to_admins(update: Update, context: CallbackContext) -> None:
         """Sends the post to the admin group, so it can be approved
         """
-        message = f"Vuoi inserire <{update.message.text.split('!dado ')[1]}> al pool delle azioni?"
+        command = update.message.text
+        message = f"Vuoi inserire <{update.message.text[6:]}> al pool delle azioni?"
         group_id = config.bot_admin_chat
 
         if message:
@@ -36,7 +37,7 @@ def handle_action_decision(update: Update, context: CallbackContext):
         approve_action(update, context)
     elif decision == "reject": 
         reject_action(update, context)
-    else:
+    elif decision == "1" or decision == "2" or decision == "3":
         assign_risk_and_save(update, context)
 
 def assign_risk_and_save(update: Update, context: CallbackContext):
@@ -70,7 +71,7 @@ def get_approve_kb() -> InlineKeyboardMarkup:
     """
     return InlineKeyboardMarkup([[
         InlineKeyboardButton("🟢 Accetta", callback_data="approve"),
-        InlineKeyboardButton("🔴 Rifiuta", callback_data="disapprove")
+        InlineKeyboardButton("🔴 Rifiuta", callback_data="reject")
     ]])
 
 def get_risk_kb() -> InlineKeyboardMarkup:
