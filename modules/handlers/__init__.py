@@ -8,11 +8,13 @@ from .help_handler import help
 from .anonym_handler import send_anonym_message
 from .actions_list_handler import show_actions, handle_pagination_callback, handle_keyboard_closure
 from .save_action_handler import handle_action_decision
-from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter
+from .discord_handler import get_voice_members
+from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter, DiscordCommandFilter
 
 dice_filter = DiceCommandFilter()
 list_filter = ListCommandFilter()
 slot_filter = SlotCommandFilter()
+discord_filter = DiscordCommandFilter()
 
 def add_handlers(disp: Dispatcher):
     """Adds all the needed handlers to the dispatcher
@@ -26,6 +28,7 @@ def add_handlers(disp: Dispatcher):
     disp.add_handler(MessageHandler(dice_filter, handle_dice))
     disp.add_handler(MessageHandler(list_filter, show_actions))
     disp.add_handler(MessageHandler(slot_filter, handle_slot))
+    disp.add_handler(MessageHandler(discord_filter, get_voice_members))
 
     # Callback handlers
     disp.add_handler(CallbackQueryHandler(handle_pagination_callback, pattern='^action#'))
@@ -41,7 +44,10 @@ def add_commands(updater: Updater):
     commands = [
         BotCommand("start", "Non serve a nulla, Nicola Mattiuzzo ti devasto!"),
         BotCommand("help", "Questo ti fa vedere come usare il dado"),
-        BotCommand("send_anonymous", "Questo per mandare i messaggi anonimi!!")
+        BotCommand("send_anonymous", "Questo per mandare i messaggi anonimi!!"),
+        BotCommand("dado", "Questo per fare cose pazze con dado"),
+        BotCommand("slot", "Questo per fare cose più pazze con slot"),
+        BotCommand("discord", "Questo per vedere chi c'è su discord!!!")
     ]
 
     updater.bot.set_my_commands(commands=commands)
