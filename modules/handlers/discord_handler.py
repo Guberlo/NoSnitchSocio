@@ -21,7 +21,7 @@ def get_voice_members(update: Update, context: CallbackContext) -> str:
         update.message.reply_animation(getRandomEmptyGif())
     else:
         update.message.reply_text(
-            text=users.text
+            text='\n'.join(users.text)
         )
 
 def getRandomEmptyGif() -> str:
