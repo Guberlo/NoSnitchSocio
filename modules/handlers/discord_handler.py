@@ -6,6 +6,7 @@ from telegram.ext import CallbackContext
 import requests
 import os
 import random
+import ast
 
 config = Config()
 
@@ -20,8 +21,9 @@ def get_voice_members(update: Update, context: CallbackContext) -> str:
     if users.text == '[]':
         update.message.reply_animation(getRandomEmptyGif())
     else:
+        users = ast.literal_eval(users.text)
         update.message.reply_text(
-            text='\n'.join(users.text)
+            text='\n'.join(users)
         )
 
 def getRandomEmptyGif() -> str:
