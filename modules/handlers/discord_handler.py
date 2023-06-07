@@ -39,9 +39,9 @@ def add_emoji_to_name(user_info) -> str:
     if user_info['deaf']:
         suffix += "🔇"
     if user_info['cam']:
-        suffix =+ "📸"
+        suffix += "📸"
     if user_info['streaming']:
-        suffix =+ "🔴"
+        suffix += "🔴"
     
     return user_info['name'] + suffix
 
