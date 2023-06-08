@@ -17,5 +17,6 @@ class Config():
         self.discord_host = self.config["discord"]["host"].get()
         self.discord_port = self.config["discord"]["port"].get()
         self.discord_gif_path = self.config["discord"]["gifPath"].get()
+        self.no_link_message = self.config["common"]["noLinkMessage"].get()
 
 

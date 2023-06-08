@@ -6,7 +6,6 @@ from telegram.ext import CallbackContext
 import requests
 import os
 import random
-import ast
 import json
 
 config = Config()

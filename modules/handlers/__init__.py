@@ -9,12 +9,15 @@ from .anonym_handler import send_anonym_message
 from .actions_list_handler import show_actions, handle_pagination_callback, handle_keyboard_closure
 from .save_action_handler import handle_action_decision
 from .discord_handler import get_voice_members
-from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter, DiscordCommandFilter
+from .toniparro_handler import get_top_link
+
+from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter, DiscordCommandFilter, ToniparroCommandFilter
 
 dice_filter = DiceCommandFilter()
 list_filter = ListCommandFilter()
 slot_filter = SlotCommandFilter()
 discord_filter = DiscordCommandFilter()
+toniparro_filter = ToniparroCommandFilter()
 
 def add_handlers(disp: Dispatcher):
     """Adds all the needed handlers to the dispatcher
@@ -29,6 +32,7 @@ def add_handlers(disp: Dispatcher):
     disp.add_handler(MessageHandler(list_filter, show_actions))
     disp.add_handler(MessageHandler(slot_filter, handle_slot))
     disp.add_handler(MessageHandler(discord_filter, get_voice_members))
+    disp.add_handler(MessageHandler(toniparro_filter, get_top_link))
 
     # Callback handlers
     disp.add_handler(CallbackQueryHandler(handle_pagination_callback, pattern='^action#'))
