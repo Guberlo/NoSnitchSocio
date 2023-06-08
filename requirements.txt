@@ -3,3 +3,4 @@ mysql-connector-python
 confuse
 python-telegram-bot-pagination
 beautifulsoup4
+requests
