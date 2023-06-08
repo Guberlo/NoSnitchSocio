@@ -2,3 +2,4 @@ python-telegram-bot
 mysql-connector-python
 confuse
 python-telegram-bot-pagination
+beautifulsoup4
