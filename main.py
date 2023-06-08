@@ -4,7 +4,6 @@ from telegram.ext import Updater
 
 from modules.handlers import add_commands, add_handlers
 from modules.data.config import Config
-from modules.data.database import MysqlConnection
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
