@@ -11,3 +11,11 @@ mysql:
   password: XXX
   db: XXX
   ca_location: ""
+
+discord:
+  host: "localhost"
+  port: "8081"
+  gifPath: 
+
+common:
+  noLinkMessage: 
