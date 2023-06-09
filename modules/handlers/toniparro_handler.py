@@ -1,14 +1,25 @@
 from telegram import Update
 from telegram.ext import CallbackContext
-from bs4 import BeautifulSoup
 
 from modules.data.config import Config
+	
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-import requests
+from selenium.webdriver.common.by import By
+
 import re
 
 config = Config()
 COMMAND = "!toniparro"
+
+options = Options()
+# options.add_argument('--headless')
+# options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 def get_top_link(update: Update, context: CallbackContext) -> str:
     if update.message.text == COMMAND:
@@ -26,9 +37,9 @@ def get_top_link(update: Update, context: CallbackContext) -> str:
         update.message.reply_text(config.no_link_message)
     
 def scrape_link(url: str) -> str:
-    html = requests.get(url)
-    soup = BeautifulSoup(html.text, "html.parser")
-    page_script = soup.select("body > script:nth-child(4)")[0].text
+    driver.get(url)
+    page_script = driver.find_element(By.XPATH, "/html/body/script[1]").get_attribute("textContent")
+    print(page_script)
     return re.search("link: '(.*?)\',", page_script).group(1)
 
 
