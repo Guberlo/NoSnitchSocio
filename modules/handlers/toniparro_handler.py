@@ -12,7 +12,7 @@ COMMAND = "!toniparro"
 scrape_ops_url = "https://proxy.scrapeops.io/v1/"
 params={
       'api_key': config.scrape_ops_key,
-      'bypasso': 'cloudflare'
+      'bypass': 'cloudflare'
 }
 
 def get_top_link(update: Update, context: CallbackContext) -> str:
