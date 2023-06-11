@@ -18,6 +18,7 @@ class Config():
         self.discord_port = self.config["discord"]["port"].get()
         self.discord_gif_path = self.config["discord"]["gifPath"].get()
         self.no_link_message = self.config["common"]["noLinkMessage"].get()
+        self.error_message = self.config["common"]["errorMessage"].get()
         self.scrape_ops_key = self.config["scrapeOps"]["apiKey"].get()
 
 

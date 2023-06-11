@@ -11,7 +11,8 @@ config = Config()
 COMMAND = "!toniparro"
 scrape_ops_url = "https://proxy.scrapeops.io/v1/"
 params={
-      'api_key': config.scrape_ops_key
+      'api_key': config.scrape_ops_key,
+      'bypasso': 'cloudflare'
 }
 
 def get_top_link(update: Update, context: CallbackContext) -> str:
@@ -31,7 +32,7 @@ def get_top_link(update: Update, context: CallbackContext) -> str:
 
     except Exception as error:
         print(error)
-        update.message.reply_text(config.no_link_message)
+        update.message.reply_text(config.error_message)
 
 def scrape_link(url: str) -> str:
     params['url'] = url

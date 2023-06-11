@@ -21,4 +21,5 @@ scrapeOps:
   apiKey: 
 
 common:
-  noLinkMessage: 
+  noLinkMessage:
+  errorMessage: 
