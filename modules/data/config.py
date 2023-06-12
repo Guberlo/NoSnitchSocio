@@ -19,6 +19,7 @@ class Config():
         self.discord_gif_path = self.config["discord"]["gifPath"].get()
         self.no_link_message = self.config["common"]["noLinkMessage"].get()
         self.error_message = self.config["common"]["errorMessage"].get()
+        self.not_found_message = self.config["common"]["notFoundMessage"].get()
         self.scrape_ops_key = self.config["scrapeOps"]["apiKey"].get()
 
 

@@ -6,10 +6,12 @@ from .dice_handler import handle_dice
 from .slot_handler import handle_slot
 from .help_handler import help
 from .anonym_handler import send_anonym_message
-from .actions_list_handler import show_actions, handle_pagination_callback, handle_keyboard_closure
+from .actions_list_handler import show_actions, handle_actions_pagination_callback
 from .save_action_handler import handle_action_decision
 from .discord_handler import get_voice_members
-from .toniparro_handler import get_top_link
+from .toniparro_handler import get_top_link, handle_names_pagination_callback
+
+from modules.utils.message_paginator import handle_keyboard_closure
 
 from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter, DiscordCommandFilter, ToniparroCommandFilter
 
@@ -35,7 +37,8 @@ def add_handlers(disp: Dispatcher):
     disp.add_handler(MessageHandler(toniparro_filter, get_top_link))
 
     # Callback handlers
-    disp.add_handler(CallbackQueryHandler(handle_pagination_callback, pattern='^action#'))
+    disp.add_handler(CallbackQueryHandler(handle_actions_pagination_callback, pattern='^action#'))
+    disp.add_handler(CallbackQueryHandler(handle_names_pagination_callback, pattern='^name#'))
     disp.add_handler(CallbackQueryHandler(handle_keyboard_closure, pattern='^closeKeyboard'))
     disp.add_handler(CallbackQueryHandler(handle_action_decision))
 
