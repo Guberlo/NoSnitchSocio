@@ -6,7 +6,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=no_snitch
       - MYSQL_USER=salsero
-      - MYSQL_PASSWORD=sonogay
+      - MYSQL_PASSWORD=badpassword
     volumes:
       - ./data/:/var/lib/mysql
     ports:
