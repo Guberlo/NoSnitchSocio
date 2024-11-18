@@ -12,7 +12,9 @@ from modules.handlers.save_action_handler import send_post_to_admins
 
 config = Config()
 mysql = MysqlConnection(config)
+
 slot_counter = Counter('slot_counter', 'Counter for slot command')
+slot_queries_counter = Counter('slot_queries_counter', 'Counter for slot command queries')
 
 prefix = "Se esce"
 COMMAND = "!slot"
@@ -21,10 +23,12 @@ symbols = ['7️⃣', '🍒', '🍋','⬛️']
 def get_random_action() -> str:
     query = f"SELECT id FROM {config.db_database}.actions"
     result = mysql.select(query)
+    slot_queries_counter.inc()
     ids = [item for t in result for item in t]
     
     query = f"SELECT description FROM {config.db_database}.actions a WHERE a.id={random.choice(ids)}"
     description = mysql.select(query)
+    slot_queries_counter.inc()
     return description[0][0]
 
 def handle_slot(update: Update, context: CallbackContext):
