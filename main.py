@@ -1,6 +1,7 @@
 import logging
 
 from telegram.ext import Updater
+from prometheus_client import start_http_server
 
 from modules.handlers import add_commands, add_handlers
 from modules.data.config import Config
@@ -12,6 +13,7 @@ logging.basicConfig(
 
 def main(config: Config):
     """Main method that starts the bot"""
+    start_http_server(8087)
     updater = Updater(config.bot_token,
                       request_kwargs={
                           'read_timeout': 20,
