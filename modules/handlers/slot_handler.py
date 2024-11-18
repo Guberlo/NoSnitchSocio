@@ -3,6 +3,8 @@ import random
 from telegram import Update
 from telegram.ext import CallbackContext
 
+from prometheus_client import Counter
+
 from modules.data.config import Config
 from modules.data.database import MysqlConnection
 from modules.handlers.save_action_handler import send_post_to_admins
@@ -10,6 +12,7 @@ from modules.handlers.save_action_handler import send_post_to_admins
 
 config = Config()
 mysql = MysqlConnection(config)
+slot_counter = Counter('slot_counter', 'Counter for slot command')
 
 prefix = "Se esce"
 COMMAND = "!slot"
@@ -25,6 +28,7 @@ def get_random_action() -> str:
     return description[0][0]
 
 def handle_slot(update: Update, context: CallbackContext):
+    slot_counter.inc()
     if update.message.text == COMMAND or update.message.text == COMMAND + " random":
         random_action = get_random_action()
         update.message.reply_text(f"{prefix} '{random.choice(symbols)} {random.choice(symbols)} {random.choice(symbols)}' {random_action}")

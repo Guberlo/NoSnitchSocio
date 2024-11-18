@@ -3,12 +3,17 @@ from modules.data.config import Config
 from telegram import Update, ParseMode
 from telegram.ext import CallbackContext
 
+from prometheus_client import Counter, Gauge
+
 import requests
 import os
 import random
 import json
 
 config = Config()
+
+discord_counter = Counter('discord_counter', 'Counter for discord command')
+voice_members_counter = Gauge('voice_members_counter', 'Counter for voice members in discord')
 
 def count_files(directory):
     file_count = 0
@@ -17,11 +22,13 @@ def count_files(directory):
     return file_count
 
 def get_voice_members(update: Update, context: CallbackContext) -> str:
+    discord_counter.inc()
     users = requests.get(f'http://{config.discord_host}:{config.discord_port}')
     if users.text == '[]':
         update.message.reply_animation(get_random_empty_gif())
     else:
         users = json.loads(users.text)
+        voice_members_counter.set(len(users))
         update.message.reply_text(
             text='\n'.join(map(lambda x: add_emoji_to_name(x), users))
         )

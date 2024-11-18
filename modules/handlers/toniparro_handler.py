@@ -20,6 +20,8 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
 
+from prometheus_client import Counter
+
 # extension_path = "/home/guberlo/NoSnitchSocio/config/ublock_origin-1.51.0.xpi"
 # service = Service()
 # options = Options()
@@ -32,6 +34,7 @@ from selenium.webdriver.common.by import By
 
 config = Config()
 mysql = MysqlConnection(config)
+toniparro_counter = Counter('toniparro_counter', 'Counter for toniparro command')
 
 COMMAND = "!toniparro"
 scrape_ops_url = "https://proxy.scrapeops.io/v1/"
@@ -42,6 +45,7 @@ params={
 reply = "Aspetta un minutino consulto gli archivi del Dr. Antonino Parrone.....🔎"
 
 def get_top_link(update: Update, context: CallbackContext) -> str:
+    toniparro_counter.inc()
     if update.message.text == COMMAND:
         update.message.reply_text(config.no_link_message)
         return 

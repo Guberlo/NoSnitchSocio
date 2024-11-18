@@ -8,18 +8,24 @@ from telegram_bot_pagination import InlineKeyboardPaginator
 from modules.data.config import Config
 from modules.data.database import MysqlConnection
 from modules.utils.message_paginator import split_messages
+from prometheus_client import Counter
 
 config = Config()
 mysql = MysqlConnection(config)
 
+list_actions_counter = Counter('list_actions_counter', 'Counter for listing actions command')
+list_actions_queries_counter = Counter('list_actions_queries_counter', 'Counter for listing actions command queries')
+
 def get_all_actions() -> List[str]:
     query = "SELECT description FROM actions;"
     result = mysql.select(query)
+    list_actions_queries_counter.inc()
     actions = [item for t in result for item in t]
 
     return actions
 
 def show_actions(update: Update, context: CallbackContext):
+    list_actions_counter.inc()
     splitted_actions = split_messages(get_all_actions())
     user_id = update.message.from_user['id']
 
