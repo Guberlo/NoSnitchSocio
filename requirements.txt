@@ -1,8 +1,7 @@
-python-telegram-bot
+python-telegram-bot==13.14
 mysql-connector-python
 confuse
 python-telegram-bot-pagination
 beautifulsoup4
 requests
-selenium
-webdriver-manager 
+prometheus-client
