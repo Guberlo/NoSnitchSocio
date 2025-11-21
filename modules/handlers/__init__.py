@@ -10,16 +10,18 @@ from .actions_list_handler import show_actions, handle_actions_pagination_callba
 from .save_action_handler import handle_action_decision
 from .discord_handler import get_voice_members
 from .toniparro_handler import get_top_link, handle_names_pagination_callback
+from .sardaukar import sardaukar
 
 from modules.utils.message_paginator import handle_keyboard_closure
 
-from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter, DiscordCommandFilter, ToniparroCommandFilter
+from modules.filters import DiceCommandFilter, ListCommandFilter, AnonymousCommandFilter, SlotCommandFilter, DiscordCommandFilter, ToniparroCommandFilter, SardaukarCommandFilter
 
 dice_filter = DiceCommandFilter()
 list_filter = ListCommandFilter()
 slot_filter = SlotCommandFilter()
 discord_filter = DiscordCommandFilter()
 toniparro_filter = ToniparroCommandFilter()
+sardaukar_filter = SardaukarCommandFilter()
 
 def add_handlers(disp: Dispatcher):
     """Adds all the needed handlers to the dispatcher
@@ -35,6 +37,7 @@ def add_handlers(disp: Dispatcher):
     disp.add_handler(MessageHandler(slot_filter, handle_slot))
     disp.add_handler(MessageHandler(discord_filter, get_voice_members))
     disp.add_handler(MessageHandler(toniparro_filter, get_top_link))
+    disp.add_handler(MessageHandler(sardaukar_filter, sardaukar))
 
     # Callback handlers
     disp.add_handler(CallbackQueryHandler(handle_actions_pagination_callback, pattern='^action#'))
