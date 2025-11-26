@@ -13,6 +13,7 @@ services:
   bot:
     image: python:3.12
     build: .
+    shm_size: 2gb
     command: ["python", "/app/main.py"]
     depends_on:
       - db

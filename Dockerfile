@@ -9,6 +9,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     libpng-dev \
     libfreetype6-dev \
+    firefox-esr \
+    wget \
+    libgtk-3-0 \
+    libdbus-glib-1-2 \
+    xvfb \
+    libxt6 \
+    libx11-xcb1 \
+    libxcb1 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . .
