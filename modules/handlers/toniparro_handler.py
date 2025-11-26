@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from telegram import Update, InlineKeyboardButton
+from telegram import Update, InlineKeyboardButton, Message, MessageEntity
 from telegram.ext import CallbackContext
 from telegram_bot_pagination import InlineKeyboardPaginator
 from bs4 import BeautifulSoup
@@ -10,7 +10,7 @@ from modules.data.database import MysqlConnection
 from modules.utils.message_paginator import split_messages
 
 import requests
-import re
+import logging
 import time
 import base64
 import json
@@ -19,64 +19,110 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from prometheus_client import Counter
 
 # extension_path = "/home/guberlo/NoSnitchSocio/config/ublock_origin-1.51.0.xpi"
-# service = Service()
-# options = Options()
-# # options.add_argument('--headless')
-# # options.add_argument('--no-sandbox')
-# options.add_argument('--disable-dev-shm-usage')
-# options.add_argument("user-agent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0")
-# driver = webdriver.Firefox(service=service, options=options)
+service = Service()
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument("user-agent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0")
+driver = webdriver.Firefox(service=service, options=options)
+wait = WebDriverWait(driver, 5)
 # driver.install_addon(extension_path, temporary=True)
 
 config = Config()
+logger = logging.getLogger(__name__)
 mysql = MysqlConnection(config)
 toniparro_counter = Counter('toniparro_counter', 'Counter for toniparro command')
 
 COMMAND = "!toniparro"
-scrape_ops_url = "https://proxy.scrapeops.io/v1/"
-params={
-      'api_key': config.scrape_ops_key,
-      'bypass': 'cloudflare'
-}
+BYPASSER_URL = "https://nabilafk.github.io/bypasser/"
 reply = "Aspetta un minutino consulto gli archivi del Dr. Antonino Parrone.....🔎"
 
 def get_top_link(update: Update, context: CallbackContext) -> str:
     toniparro_counter.inc()
-    if update.message.text == COMMAND:
+
+    logger.debug("TONIPARRO PARTE")
+
+    # Plain simple command
+    if update.message.text == COMMAND and not update.message.reply_to_message:
         update.message.reply_text(config.no_link_message)
         return 
 
-    prompt = update.message.text.split("!toniparro ")[1]
-    if not prompt.startswith("https://") and not prompt.startswith("http://"):
-        if prompt == "lista" or prompt == "list":
-            show_names(update, context)
-            return
-        if not is_toniparrato_by_name(prompt):
-            update.message.reply_text(config.not_found_message)
-        else: 
-            update.message.reply_text('\n'.join(get_links_by_name(prompt)))
+    # Case 1: reply to a preexisting message
+    if update.message.reply_to_message:
+        logger.debug("CASO 1")
+        # Get the replied message text
+        replied_text = update.message.reply_to_message.caption
+        logger.debug("Replied message caption: " + str(update.message.reply_to_message))
 
-        return
-    
-    try:
-        msg = update.message.reply_text(reply)
-        if (is_toniparrato_by_link(prompt)):
-            context.bot.edit_message_text(chat_id=update.message.chat_id,
-                                        message_id=msg.message_id,
-                                        text='\n'.join(get_scraped_by_link(prompt)))
-        else:
-            scraped = scrape_link(prompt)
-            context.bot.edit_message_text(chat_id=update.message.chat_id,
-                                        message_id=msg.message_id,
-                                        text=scraped['scraped_link'])
-            save_scraped_link(scraped)
-    except Exception as error:
-        print(error)
-        update.message.reply_text(config.error_message)
+        if not replied_text:
+            logger.debug("Replied message: " + str(update.message.reply_to_message))
+            update.message.reply_text(config.no_link_message)
+            return
+
+        # Get name
+        name = replied_text.splitlines()[0] or "NoName"
+        logger.debug("NAME " + name)
+
+        # Get the first URL inside the message
+        link = get_link_in_message(update.message.reply_to_message)
+        if not link:
+            update.message.reply_text(config.error_message)
+            return
+        
+        logger.debug("LINK " + link)
+
+        try:
+            msg = update.message.reply_text(reply)
+            if (is_toniparrato_by_link(link)):
+                context.bot.edit_message_text(chat_id=update.message.chat_id,
+                                            message_id=msg.message_id,
+                                            text='\n'.join(get_scraped_by_link(link)))
+            else:
+                scraped = scrape_link(link)
+                context.bot.edit_message_text(chat_id=update.message.chat_id,
+                                            message_id=msg.message_id,
+                                            text=scraped)
+                save_scraped_link({'link': link, 'scraped_link': scraped, 'name': name})
+        except Exception as error:
+            logger.error(error)
+            update.message.reply_text(config.error_message)
+
+    # Case 2: command with arguments
+    else:
+        logger.debug("CASO 2")
+        prompt = update.message.text.split("!toniparro ")[1]
+        if not prompt.startswith("https://") and not prompt.startswith("http://"):
+            if prompt == "lista" or prompt == "list":
+                show_names(update, context)
+                return
+            if not is_toniparrato_by_name(prompt):
+                update.message.reply_text(config.not_found_message)
+            else: 
+                update.message.reply_text('\n'.join(get_links_by_name(prompt)))
+            return
+        
+        try:
+            msg = update.message.reply_text(reply)
+            if (is_toniparrato_by_link(prompt)):
+                context.bot.edit_message_text(chat_id=update.message.chat_id,
+                                            message_id=msg.message_id,
+                                            text='\n'.join(get_scraped_by_link(prompt)))
+            else:
+                scraped = scrape_link(prompt)
+                context.bot.edit_message_text(chat_id=update.message.chat_id,
+                                            message_id=msg.message_id,
+                                            text=scraped)
+                #save_scraped_link(scraped)
+        except Exception as error:
+            logger.error(error)
+            update.message.reply_text(config.error_message)
 
 def show_names(update: Update, context: CallbackContext):
     splitted_names = split_messages(get_all_names())
@@ -157,21 +203,48 @@ def scrape_linkvertise(url: str) -> str:
     return new_link
 
 def scrape_link(url: str) -> Dict[str, str]:
-    if ("link-hub" in url):
-        scraped_link = scrape_linkvertise(url)
-        name = "Unknown"
-    else:
-        params['url'] = url
-        html = requests.get(scrape_ops_url, params=params)
-        soup = BeautifulSoup(html.text, "html.parser")
-        page_script = soup.select("body > script:nth-child(4)")[0].text
-        name =  re.search("title: '(.*?)\',", page_script).group(1)
+    driver.get(BYPASSER_URL)
 
-    return {
-        'name': name,
-        'link': url,
-        'scraped_link': scraped_link
-    }
+    # Wait for input box and add link
+    input_box = wait.until(EC.presence_of_element_located((By.ID, "input_link")))
+    logger.debug("INPUT BOX FOUND!")
+    input_box.clear()
+    input_box.send_keys(url)
+
+    # Wait for the submit button
+    submit_button = wait.until(EC.presence_of_element_located((By.ID, "submit_btn")))
+    logger.debug("SUBMIT BUTTON FOUND!")
+    submit_button.click()
+
+    # Wait for the result to be visible and that has text
+    logger.debug("LOOKING FOR ANSWER")
+    result = wait.until(text_not_empty((By.ID, "results")))
+    logger.debug("Result: " + result.text)
+
+    return result.text
+
+def get_link_in_message(message: Message) -> str:
+    entities = message.caption_entities or []
+    link = None
+
+    logger.debug("Scanning message entities")
+    try:
+        for entity in entities:
+            if entity.type == MessageEntity.URL:
+                logger.debug("Found URL entity!")
+                # URL is present as-is in the text
+                link = message.parse_caption_entity(entity)
+                break
+            elif entity.type == MessageEntity.TEXT_LINK:
+                logger.debug("Found TEXT LINK entity!")
+                # Embedded link
+                link = entity.url
+                break
+        return link
+    except Exception as e:
+        logger.error(f"Error scanning entities: ${e}")
+        return None
+
 
 def save_scraped_link(scraped: Dict[str, str]) -> bool:
     query = f"""INSERT INTO toniparrate (name, link, scraped_link)
@@ -211,3 +284,15 @@ def get_all_names() -> List[str]:
     names = [name for n in result for name in n]
 
     return names
+
+## Helper for driver
+# Custom ExpectedCondition: wait until element has non-empty text
+class text_not_empty:
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        element = driver.find_element(*self.locator)
+        if element.text.strip():
+            return element
+        return False
